@@ -1,24 +1,22 @@
-FROM node:20-alpine AS builder
+FROM node:20-alpine
 WORKDIR /app
+
+# ওপেনএসএসএল এবং নেসেসারি লাইব্রেরি ইন্সটল করা
+RUN apk add --no-cache openssl libc6-compat
+
+# ডিপেন্ডেন্সি ফাইল কপি ও ইন্সটল
 COPY package*.json ./
 RUN npm ci
+
+# পুরো প্রজেক্ট কপি করা
 COPY . .
+
+# প্রিজমা জেনারেট এবং নেক্সট জেএস বিল্ড
 RUN npx prisma generate
 RUN npm run build
 
-FROM node:20-alpine AS runner
-WORKDIR /app
+EXPOSE 3000
+ENV PORT=3000
 ENV NODE_ENV=production
 
-RUN apk add --no-cache openssl libc6-compat
-
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
-# প্রিজমার ইঞ্জিন ও ক্লায়েন্ট ফাইলগুলো রানার স্টেজে কপি করার জন্য এটি জরুরি
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-
-EXPOSE 3000
-CMD ["node", "server.js"]
+CMD ["npm", "run", "start"]

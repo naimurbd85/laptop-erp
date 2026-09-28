@@ -8,8 +8,9 @@ export async function GET() {
       orderBy: { date: 'desc' },
     })
     return NextResponse.json(investments)
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch investments' }, { status: 500 })
+  } catch (error: any) {
+    console.error('GET Error:', error)
+    return NextResponse.json({ error: error.message || 'Failed to fetch investments' }, { status: 500 })
   }
 }
 
@@ -22,14 +23,15 @@ export async function POST(request: Request) {
     const newInvestment = await prisma.investment.create({
       data: {
         investorName: investorName || 'Owner',
-        amount: parseFloat(amount),
+        amount: parseFloat(amount) || 0,
         date: date ? new Date(date) : new Date(),
-        note,
+        note: note || null,
       },
     })
 
     return NextResponse.json(newInvestment, { status: 201 })
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to add investment' }, { status: 500 })
+  } catch (error: any) {
+    console.error('POST Error:', error)
+    return NextResponse.json({ error: error.message || 'Failed to add investment' }, { status: 500 })
   }
 }

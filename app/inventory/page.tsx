@@ -41,7 +41,7 @@ export default async function InventoryPage() {
                 </td>
               </tr>
             ) : (
-              products.map((product) => (
+              products.map((product: any) => (
                 <tr key={product.id} className="border-b hover:bg-gray-50">
                   <td className="p-3 font-semibold text-gray-800">
                     {product.brand} {product.model}

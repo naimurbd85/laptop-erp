@@ -31,7 +31,7 @@ export default function InvestmentsPage() {
     const formData = new FormData(e.currentTarget)
     const data = {
       investorName: formData.get('investorName'),
-      amount: formData.get('amount'),
+      amount: parseFloat(formData.get('amount') as string) || 0, // এখানে নাম্বার কনভার্ট নিশ্চিত করা হলো
       date: formData.get('date'),
       note: formData.get('note'),
     }
@@ -46,7 +46,8 @@ export default function InvestmentsPage() {
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to save investment')
 
-      formRef.current?.reset() // এখানে রিফ ব্যবহার করা হলো
+      // ফর্ম রিসেট করার জন্য একদম নিরাপদ উপায়
+      e.currentTarget.reset() 
       fetchInvestments()
     } catch (err: any) {
       setError(err.message)

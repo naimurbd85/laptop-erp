@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 interface InventoryItem {
   id: string;
@@ -35,22 +36,47 @@ export default function ERPDashboard() {
 
   return (
     <div className="min-h-screen bg-zinc-100 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-50 font-sans">
-      {/* Top Header */}
-      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30">
+      {/* Top Header & Integrated Navbar */}
+      <header className="bg-white dark:bg-zinc-900 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          
+          {/* Logo & Title */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
-              E
-            </div>
-            <div>
-              <h1 className="text-base font-bold leading-tight">Laptop ERP & Inventory</h1>
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">Branch: Main Warehouse (Mymensingh)</p>
-            </div>
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg">
+                E
+              </div>
+              <div>
+                <h1 className="text-base font-bold leading-tight">Laptop ERP</h1>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">Mymensingh Branch</p>
+              </div>
+            </Link>
           </div>
+
+          {/* Navigation Links */}
+          <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
+            <Link href="/" className="text-blue-600 dark:text-blue-400 font-semibold transition-colors">
+              Dashboard
+            </Link>
+            <Link href="/inventory" className="text-zinc-600 dark:text-zinc-300 hover:text-blue-600 transition-colors">
+              Inventory
+            </Link>
+            <Link href="/investments" className="text-zinc-600 dark:text-zinc-300 hover:text-blue-600 transition-colors">
+              Investments
+            </Link>
+            <Link href="/expenses" className="text-zinc-600 dark:text-zinc-300 hover:text-blue-600 transition-colors">
+              Expenses
+            </Link>
+            <Link href="/finance" className="text-zinc-600 dark:text-zinc-300 hover:text-blue-600 transition-colors">
+              Finance & P/L
+            </Link>
+          </nav>
+
+          {/* Status Badge */}
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Database Connected
+              Connected
             </span>
           </div>
         </div>
@@ -98,9 +124,9 @@ export default function ERPDashboard() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="px-3.5 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-72"
               />
-              <button className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
+              <Link href="/inventory/new" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap">
                 + Add Item
-              </button>
+              </Link>
             </div>
           </div>
 

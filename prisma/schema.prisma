@@ -73,3 +73,22 @@ model Warranty {
   notes         String?  // সার্ভিসিং হিস্ট্রি বা নোট
   createdAt     DateTime @default(now())
 }
+
+model Investment {
+  id          String   @id @default(cuid())
+  investorName String  @default("Owner") // বিনিয়োগকারীর নাম
+  amount      Float                     // বিনিয়োগের পরিমাণ
+  date        DateTime @default(now())  // তারিখ
+  note        String?                   // বিবরণ বা নোট
+  createdAt   DateTime @default(now())
+}
+
+model Expense {
+  id          String   @id @default(cuid())
+  title       String                    // খরচের খাত (যেমন: দোকান ভাড়া, ইউটিলিটি বিল)
+  amount      Float                     // টাকার পরিমাণ
+  category    String   @default("General") // ক্যাটাগরি (Cash / Bank)
+  date        DateTime @default(now())  // তারিখ
+  note        String?
+  createdAt   DateTime @default(now())
+}

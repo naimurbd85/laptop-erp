@@ -1,11 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 export default function InvestmentsPage() {
   const [investments, setInvestments] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const formRef = useRef<HTMLFormElement>(null)
 
   // ইনভেস্টমেন্ট ফেচ করা
   const fetchInvestments = async () => {
@@ -27,8 +28,7 @@ export default function InvestmentsPage() {
     setLoading(true)
     setError('')
 
-    const form = e.currentTarget // ফর্মটি আগে সেভ করে রাখলাম
-    const formData = new FormData(form)
+    const formData = new FormData(e.currentTarget)
     const data = {
       investorName: formData.get('investorName'),
       amount: formData.get('amount'),
@@ -46,9 +46,8 @@ export default function InvestmentsPage() {
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to save investment')
 
-      form.reset() // এখানে সরাসরি সেভ করা ফর্ম ভেরিয়েবল ব্যবহার করা হলো
+      formRef.current?.reset() // এখানে রিফ ব্যবহার করা হলো
       fetchInvestments()
-      alert('Investment added successfully!')
     } catch (err: any) {
       setError(err.message)
     } finally {
@@ -71,7 +70,7 @@ export default function InvestmentsPage() {
       {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      <form ref={formRef} onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div>
           <label className="block text-sm font-medium text-gray-700">Investor Name</label>
           <input type="text" name="investorName" defaultValue="Owner" required className="mt-1 block w-full p-2 border rounded-md border-gray-300" />

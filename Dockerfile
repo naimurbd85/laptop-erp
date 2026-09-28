@@ -4,15 +4,13 @@ WORKDIR /app
 # ওপেনএসএসএল এবং নেসেসারি লাইব্রেরি ইন্সটল করা
 RUN apk add --no-cache openssl libc6-compat
 
-# ডিপেন্ডেন্সি ফাইল কপি ও ইন্সটল
-COPY package*.json ./
-RUN npm ci
-
-# পুরো প্রজেক্ট কপি করা
+# প্রথমে পুরো প্রজেক্ট ফাইল কপি করা (যাতে প্রিজমা স্কিমা ও প্যাকেজ ফাইল একসাথে থাকে)
 COPY . .
 
-# প্রিজমা জেনারেট এবং নেক্সট জেএস বিল্ড
-RUN npx prisma generate
+# ডিপেন্ডেন্সি ইন্সটল করা (এতে postinstall-এর prisma generate কোনো এরর দিবে না)
+RUN npm ci
+
+# নেক্সট জেএস বিল্ড
 RUN npm run build
 
 EXPOSE 3000

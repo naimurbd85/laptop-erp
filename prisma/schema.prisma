@@ -1,0 +1,75 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ১. ল্যাপটপ ও এক্সেসরিজ ইনভেন্টরি
+model Product {
+  id           String   @id @default(uuid())
+  brand        String   // যেমন: HP, Dell, Lenovo
+  model        String   // যেমন: ProBook 450 G5
+  serialNumber String   @unique // ইউনিক সিরিয়াল নম্বর
+  processor    String?  // যেমন: Core i5 8th Gen
+  ram          String?  // যেমন: 8GB DDR4
+  storage      String?  // যেমন: 256GB SSD
+  condition    String?  // যেমন: Fresh, Good, Minor Scratch
+  buyPrice     Float    // ক্রয়মূল্য
+  sellPrice    Float    // বিক্রয়মূল্য
+  status       String   @default("AVAILABLE") // "AVAILABLE", "SOLD", "DAMAGED"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  saleItems    SaleItem[]
+  warranties   Warranty[]
+}
+
+// ২. কাস্টমার ইনফরমেশন
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String   @unique
+  address   String?
+  createdAt DateTime @default(now())
+  sales     Sale[]
+}
+
+// ৩. বিক্রয় বা সেলস রেকর্ড (ইনভয়েস)
+model Sale {
+  id            String     @id @default(uuid())
+  invoiceNumber String     @unique // যেমন: INV-2026-001
+  customerId    String
+  customer      Customer   @relation(fields: [customerId], references: [id])
+  totalAmount   Float      // মোট দাম
+  discount      Float      @default(0) // ডিসকাউন্ট
+  paidAmount    Float      // কাস্টমার যত টাকা পরিশোধ করেছে
+  dueAmount     Float      @default(0) // বকেয়া
+  soldBy        String?    // বিক্রেতার নাম
+  createdAt     DateTime   @default(now())
+  items         SaleItem[]
+}
+
+// ৪. সেলস আইটেম
+model SaleItem {
+  id        String   @id @default(uuid())
+  saleId    String
+  sale      Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  price     Float    // বিক্রয়মূল্য
+}
+
+// ৫. ওয়ারেন্টি ও সার্ভিসিং ম্যানেজমেন্ট
+model Warranty {
+  id            String   @id @default(uuid())
+  productId     String
+  product       Product  @relation(fields: [productId], references: [id])
+  customerPhone String
+  startDate     DateTime @default(now())
+  endDate       DateTime // ওয়ারেন্টি শেষের তারিখ
+  status        String   @default("ACTIVE") // "ACTIVE", "EXPIRED", "CLAIMED"
+  notes         String?  // সার্ভিসিং হিস্ট্রি বা নোট
+  createdAt     DateTime @default(now())
+}

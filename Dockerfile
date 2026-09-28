@@ -1,20 +1,23 @@
-FROM node:20-alpine
+FROM node:20-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache openssl libc6-compat
+COPY . .
+RUN npm ci
+RUN npm run build
 
-# ওপেনএসএসএল এবং নেসেসারি লাইব্রেরি ইন্সটল করা
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
 RUN apk add --no-cache openssl libc6-compat
 
-# প্রথমে পুরো প্রজেক্ট ফাইল কপি করা (যাতে প্রিজমা স্কিমা ও প্যাকেজ ফাইল একসাথে থাকে)
-COPY . .
-
-# ডিপেন্ডেন্সি ইন্সটল করা (এতে postinstall-এর prisma generate কোনো এরর দিবে না)
-RUN npm ci
-
-# নেক্সট জেএস বিল্ড
-RUN npm run build
+# স্ট্যান্ডঅ্যালোন বিল্ড ফাইলগুলো কপি করা
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
 ENV PORT=3000
-ENV NODE_ENV=production
+ENV HOSTNAME="0.0.0.0"
 
-CMD ["npm", "run", "start"]
+CMD ["node", "server.js"]

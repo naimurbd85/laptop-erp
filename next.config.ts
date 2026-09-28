@@ -1,5 +1,7 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  output: 'standalone', // এই লাইনটি থাকা বাধ্যতামূলক
+}
 
-export default nextConfig;
+export default nextConfig

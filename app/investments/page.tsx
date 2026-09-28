@@ -27,7 +27,8 @@ export default function InvestmentsPage() {
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.currentTarget)
+    const form = e.currentTarget // ফর্মটি আগে সেভ করে রাখলাম
+    const formData = new FormData(form)
     const data = {
       investorName: formData.get('investorName'),
       amount: formData.get('amount'),
@@ -45,7 +46,7 @@ export default function InvestmentsPage() {
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to save investment')
 
-      e.currentTarget.reset()
+      form.reset() // এখানে সরাসরি সেভ করা ফর্ম ভেরিয়েবল ব্যবহার করা হলো
       fetchInvestments()
       alert('Investment added successfully!')
     } catch (err: any) {

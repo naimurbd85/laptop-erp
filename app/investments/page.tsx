@@ -1,12 +1,17 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function InvestmentsPage() {
   const [investments, setInvestments] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const formRef = useRef<HTMLFormElement>(null)
+
+  // ফর্মের ফিল্ডগুলোর জন্য স্টেট (Controlled State)
+  const [investorName, setInvestorName] = useState('Owner')
+  const [amount, setAmount] = useState('')
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
+  const [note, setNote] = useState('')
 
   // ইনভেস্টমেন্ট ফেচ করা
   const fetchInvestments = async () => {
@@ -23,31 +28,34 @@ export default function InvestmentsPage() {
     fetchInvestments()
   }, [])
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.currentTarget)
-    const data = {
-      investorName: formData.get('investorName'),
-      amount: parseFloat(formData.get('amount') as string) || 0, // এখানে নাম্বার কনভার্ট নিশ্চিত করা হলো
-      date: formData.get('date'),
-      note: formData.get('note'),
+    const payload = {
+      investorName: investorName || 'Owner',
+      amount: parseFloat(amount) || 0,
+      date,
+      note,
     }
 
     try {
       const res = await fetch('/api/investments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       })
 
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to save investment')
 
-      // ফর্ম রিসেট করার জন্য একদম নিরাপদ উপায়
-      e.currentTarget.reset() 
+      // সফলভাবে সেভ হওয়ার পর ফর্ম ক্লিয়ার (স্টেট রিসেট)
+      setInvestorName('Owner')
+      setAmount('')
+      setDate(new Date().toISOString().split('T')[0])
+      setNote('')
+
       fetchInvestments()
     } catch (err: any) {
       setError(err.message)
@@ -71,22 +79,47 @@ export default function InvestmentsPage() {
       {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>}
 
       {/* Form */}
-      <form ref={formRef} onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      <form onSubmit={handleSubmit} className="bg-white p-6 shadow-md rounded-lg grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <div>
           <label className="block text-sm font-medium text-gray-700">Investor Name</label>
-          <input type="text" name="investorName" defaultValue="Owner" required className="mt-1 block w-full p-2 border rounded-md border-gray-300" />
+          <input 
+            type="text" 
+            value={investorName} 
+            onChange={(e) => setInvestorName(e.target.value)} 
+            required 
+            className="mt-1 block w-full p-2 border rounded-md border-gray-300" 
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Amount (৳)</label>
-          <input type="number" name="amount" required placeholder="e.g. 100000" className="mt-1 block w-full p-2 border rounded-md border-gray-300" />
+          <input 
+            type="number" 
+            value={amount} 
+            onChange={(e) => setAmount(e.target.value)} 
+            required 
+            placeholder="e.g. 100000" 
+            className="mt-1 block w-full p-2 border rounded-md border-gray-300" 
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Date</label>
-          <input type="date" name="date" defaultValue={new Date().toISOString().split('T')[0]} required className="mt-1 block w-full p-2 border rounded-md border-gray-300" />
+          <input 
+            type="date" 
+            value={date} 
+            onChange={(e) => setDate(e.target.value)} 
+            required 
+            className="mt-1 block w-full p-2 border rounded-md border-gray-300" 
+          />
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Note / Source</label>
-          <input type="text" name="note" placeholder="e.g. Personal savings / Bank loan" className="mt-1 block w-full p-2 border rounded-md border-gray-300" />
+          <input 
+            type="text" 
+            value={note} 
+            onChange={(e) => setNote(e.target.value)} 
+            placeholder="e.g. Personal savings / Bank loan" 
+            className="mt-1 block w-full p-2 border rounded-md border-gray-300" 
+          />
         </div>
         <div className="md:col-span-2">
           <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white p-2.5 rounded-md font-semibold hover:bg-blue-700 transition">

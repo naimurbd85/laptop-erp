@@ -76,12 +76,16 @@ model Warranty {
 }
 
 model Investment {
-  id          String   @id @default(cuid())
-  investorName String  @default("Owner") // বিনিয়োগকারীর নাম
-  amount      Float                     // বিনিয়োগের পরিমাণ
-  date        DateTime @default(now())  // তারিখ
-  note        String?                   // বিবরণ বা নোট
-  createdAt   DateTime @default(now())
+  id               String   @id @default(cuid())
+  investorName     String   @default("Owner") // বিনিয়োগকারীর নাম
+  investmentType   String   @default("Owner/Partner Investment") // ক্যাটাগরি (Owner/Partner বা Other)
+  amount           Float                    // বিনিয়োগের পরিমাণ
+  investmentMethod String   @default("Cash")  // ক্যাশ, ব্যাংক, মোবাইল ব্যাংকিং বা চেক
+  account          String?                  // ক্যাশ / ব্যাংক / মোবাইল অ্যাকাউন্ট নাম
+  transactionNo    String?                  // ট্রানজেকশন আইডি বা চেক নম্বর
+  date             DateTime @default(now())  // তারিখ
+  note             String?                  // উদ্দেশ্য বা বিবরণ (Purpose / Description)
+  createdAt        DateTime @default(now())
 }
 
 model Expense {

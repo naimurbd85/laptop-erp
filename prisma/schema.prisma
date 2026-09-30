@@ -10,21 +10,28 @@ generator client {
 
 // ১. ল্যাপটপ ও এক্সেসরিজ ইনভেন্টরি
 model Product {
-  id           String   @id @default(uuid())
-  brand        String   // যেমন: HP, Dell, Lenovo
-  model        String   // যেমন: ProBook 450 G5
-  serialNumber String   @unique // ইউনিক সিরিয়াল নম্বর
-  processor    String?  // যেমন: Core i5 8th Gen
-  ram          String?  // যেমন: 8GB DDR4
-  storage      String?  // যেমন: 256GB SSD
-  condition    String?  // যেমন: Fresh, Good, Minor Scratch
-  buyPrice     Float    // ক্রয়মূল্য
-  sellPrice    Float    // বিক্রয়মূল্য
-  status       String   @default("AVAILABLE") // "AVAILABLE", "SOLD", "DAMAGED"
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  saleItems    SaleItem[]
-  warranties   Warranty[]
+  id              String   @id @default(uuid())
+  brand           String
+  model           String
+  serialNumber    String   @unique
+  processor       String?
+  generation      String?  // এটি আছে কি না চেক করুন
+  ram             String?
+  storageType     String?
+  storageCapacity String?
+  gpu             String?
+  gpuSize         String?  // এটি আছে কি না চেক করুন
+  condition       String?
+  receivedDate    DateTime?
+  buyPrice        Float
+  sellPrice       Float
+  quantity        Int      @default(1)
+  status          String   @default("AVAILABLE")
+  remarks         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  saleItems       SaleItem[]
+  warranties      Warranty[]
 }
 
 // ২. কাস্টমার ইনফরমেশন

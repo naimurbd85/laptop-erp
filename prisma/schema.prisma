@@ -77,7 +77,7 @@ model Warranty {
 
 model Investment {
   id               String   @id @default(cuid())
-  investorName     String   @default("Owner") // বিনিয়োগকারীর নাম
+  investorName     String   @default("Owner") //   বিনিয়োগকারীর নাম 
   investmentType   String   @default("Owner/Partner Investment") // ক্যাটাগরি (Owner/Partner বা Other)
   amount           Float                    // বিনিয়োগের পরিমাণ
   investmentMethod String   @default("Cash")  // ক্যাশ, ব্যাংক, মোবাইল ব্যাংকিং বা চেক

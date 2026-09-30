@@ -17,6 +17,9 @@ export default function NewInventoryPage() {
   const [gpuSizes, setGpuSizes] = useState(['128 MB', '2 GB', '4 GB', '6 GB', '8 GB'])
   const [conditions, setConditions] = useState(['Used', 'Refurbished', 'New'])
 
+  // Get today's date in YYYY-MM-DD format for default value
+  const today = new Date().toISOString().split('T')[0]
+
   const handleAddOption = (listName: string) => {
     const newVal = prompt(`Enter new value:`)
     if (!newVal || !newVal.trim()) return
@@ -50,6 +53,7 @@ export default function NewInventoryPage() {
       gpu: formData.get('gpu'),
       gpuSize: formData.get('gpuSize'),
       condition: formData.get('condition'),
+      receivedDate: formData.get('receivedDate'),
       buyPrice: parseFloat(formData.get('buyPrice') as string),
       sellPrice: parseFloat(formData.get('sellPrice') as string),
       quantity: parseInt(formData.get('quantity') as string) || 1,
@@ -191,6 +195,12 @@ export default function NewInventoryPage() {
             </select>
             <button type="button" onClick={() => handleAddOption('condition')} className="bg-gray-200 px-3 rounded-md hover:bg-gray-300 font-bold">+</button>
           </div>
+        </div>
+
+        {/* Receive Date */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">Receive Date (রিসিভ তারিখ)</label>
+          <input type="date" name="receivedDate" defaultValue={today} required className="mt-1 block w-full p-2 border rounded-md border-gray-300" />
         </div>
 
         {/* Quantity */}

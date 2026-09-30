@@ -26,7 +26,10 @@ export default function ExpensesPage() {
     setLoading(true)
     setError('')
 
-    const formData = new FormData(e.currentTarget)
+    // ফর্ম এলিমেন্টটি আগে থেকেই সেভ করে রাখছি
+    const form = e.currentTarget
+
+    const formData = new FormData(form)
     const data = {
       title: formData.get('title'),
       amount: formData.get('amount'),
@@ -45,7 +48,8 @@ export default function ExpensesPage() {
       const result = await res.json()
       if (!res.ok) throw new Error(result.error || 'Failed to save expense')
 
-      e.currentTarget.reset()
+      // এখন ফর্ম রিসেট করার সময় সংরক্ষিত ভ্যারিয়েবল ব্যবহার করা হলো
+      form.reset()
       fetchExpenses()
       alert('Expense recorded successfully!')
     } catch (err: any) {
